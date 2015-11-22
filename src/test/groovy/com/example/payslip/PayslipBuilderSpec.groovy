@@ -106,7 +106,7 @@ class PayslipBuilderSpec extends Specification {
         superannuation << [111, 40]
     }
 
-    def "test payslip build"() {
+    def "test sucessful payslip build"() {
         when:
         employeeDetails.getPayPeriodType() >> PayPeriodType.MONTH
         employeeDetails.getAnnualSalary() >> 1000
@@ -121,6 +121,22 @@ class PayslipBuilderSpec extends Specification {
         1 * payslipBuilder.incomeTax()
         1 * payslipBuilder.netIncome()
         1 * payslipBuilder.superannuation()
+    }
+
+    def "test failed payslip build"() {
+        when:
+        employeeDetails.getPayPeriodType() >> PayPeriodType.MONTH
+        employeeDetails.getAnnualSalary() >> 1000
+        dateHelper.findFinancialYear(_) >> 2015
+        employeeDetails.getSuperRate() >> 0.9
+        taxCalculator.calc(_, _) >> {throw new IllegalStateException(message)}
+        payslipBuilder.build()
+
+        then:
+        payslipBuilder.error == message
+
+        where:
+        message = "failed"
     }
 
 }

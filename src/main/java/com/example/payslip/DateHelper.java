@@ -11,7 +11,7 @@ import java.time.LocalDate;
  */
 public class DateHelper {
 
-    public LocalDate calcEndDate(LocalDate startDate, PayPeriodType payPeriodType) {
+    public LocalDate calcEndDate(final LocalDate startDate, final PayPeriodType payPeriodType) {
         LocalDate endDate = null;
         if (startDate != null && payPeriodType != null) {
             switch (payPeriodType) {
@@ -25,7 +25,7 @@ public class DateHelper {
         return endDate;
     }
 
-    public int findFinancialYear(LocalDate date) {
+    public int findFinancialYear(final LocalDate date) {
         int financialYear = date.getYear();
         if (date.getMonth().getValue() >= 1 && date.getMonth().getValue() <= 6) {
             financialYear --;

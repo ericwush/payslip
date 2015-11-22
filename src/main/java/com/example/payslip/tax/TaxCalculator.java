@@ -32,6 +32,8 @@ public class TaxCalculator {
         }
         if (rate != null) {
             tax = rate.apply(taxable);
+        } else {
+            throw new IllegalStateException("Failed to find corresponding tax rates for " + year + ".");
         }
         return tax;
     }

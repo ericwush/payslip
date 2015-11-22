@@ -58,7 +58,7 @@ class FinancialYearIndividualTaxRateSpec extends Specification {
         when:
         IndividualTaxRate[] taxRates = [taxRate1, taxRate2, taxRate3]
         taxRate = Spy()
-        taxRate.financialYear = 2015
+        taxRate.financialYear = financialYear
         taxRate.taxRates = taxRates
         def tax = taxRate.apply(income)
 
@@ -66,10 +66,13 @@ class FinancialYearIndividualTaxRateSpec extends Specification {
         1 * taxRate1.accept(_)
         1 * taxRate2.accept(_)
         1 * taxRate3.accept(_)
-        tax == null
+        def e = thrown(IllegalStateException)
+        e.message == message
 
         where:
         income = Integer.valueOf(new Random().nextInt(100))
+        financialYear = 2015
+        message = "Failed to find corresponding tax rate in ${financialYear}."
     }
 
 }

@@ -11,7 +11,7 @@ public enum PayPeriodType {
 
     private final int divisor;
 
-    private PayPeriodType(int divisor) {
+    private PayPeriodType(final int divisor) {
         this.divisor = divisor;
 
     }

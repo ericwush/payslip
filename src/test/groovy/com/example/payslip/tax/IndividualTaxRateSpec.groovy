@@ -46,4 +46,16 @@ class IndividualTaxRateSpec extends Specification {
         output << [75, 45, 59]
     }
 
+    def "test tax rate cannot be applied"() {
+        when:
+        taxRate.baseIncome = 100
+        taxRate.baseTax = null
+        taxRate.rate = 0.1
+        taxRate.apply(1000)
+
+        then:
+        def e = thrown(IllegalStateException)
+        e.message == 'Failed to apply tax rate.'
+    }
+
 }

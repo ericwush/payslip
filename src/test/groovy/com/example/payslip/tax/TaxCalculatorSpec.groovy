@@ -37,4 +37,23 @@ class TaxCalculatorSpec extends Specification {
         output = Integer.valueOf(new Random().nextInt(50))
     }
 
+    def "test no tax rate found for income"() {
+        when:
+        FinancialYearIndividualTaxRate[] taxRates = [taxRate1, taxRate2, taxRate3]
+        taxCalculator = Spy(constructorArgs: [taxRates])
+        def tax = taxCalculator.calc(year, taxable)
+
+        then:
+        1 * taxRate1.accept(_)
+        1 * taxRate2.accept(_)
+        1 * taxRate3.accept(_)
+        def e = thrown(IllegalStateException)
+        e.message == message
+
+        where:
+        year = Integer.valueOf(new Random().nextInt(2015))
+        taxable = Integer.valueOf(new Random().nextInt(100))
+        message = "Failed to find corresponding tax rates for ${year}."
+    }
+
 }

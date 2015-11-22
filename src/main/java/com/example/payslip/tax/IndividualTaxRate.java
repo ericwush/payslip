@@ -24,7 +24,13 @@ public class IndividualTaxRate implements TaxRate {
 
     @Override
     public Integer apply(final Integer taxable) {
-        return Math.round(baseTax.intValue() + (taxable.intValue() - baseIncome.intValue()) * rate);
+        Integer tax;
+        try {
+            tax = Math.round(baseTax.intValue() + (taxable.intValue() - baseIncome.intValue()) * rate);
+        } catch (Exception e) {
+            throw new IllegalStateException("Failed to apply tax rate.");
+        }
+        return tax;
     }
 
     public Integer getMinIncome() {

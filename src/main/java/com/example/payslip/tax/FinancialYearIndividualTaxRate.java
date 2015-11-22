@@ -33,6 +33,8 @@ public class FinancialYearIndividualTaxRate implements TaxRate {
         }
         if (rate != null) {
             tax = rate.apply(taxable);
+        } else {
+            throw new IllegalStateException("Failed to find corresponding tax rate in " + financialYear + ".");
         }
         return tax;
     }

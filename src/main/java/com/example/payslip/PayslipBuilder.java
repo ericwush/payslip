@@ -19,8 +19,10 @@ public class PayslipBuilder {
     private Integer incomeTax;
     private Integer netIncome;
     private Integer superannuation;
+    private String error;
 
-    public PayslipBuilder(EmployeeDetails employeeDetails, DateHelper dateHelper, TaxCalculator taxCalculator) {
+    public PayslipBuilder(final EmployeeDetails employeeDetails, final DateHelper dateHelper,
+            final TaxCalculator taxCalculator) {
         if (employeeDetails == null) {
             throw new IllegalArgumentException("EmployeeDetails cannot be null");
         }
@@ -65,9 +67,13 @@ public class PayslipBuilder {
     }
 
     public Payslip build() {
-        endDate().grossIncome().incomeTax().netIncome().superannuation();
+        try {
+            endDate().grossIncome().incomeTax().netIncome().superannuation();
+        } catch (Exception e) {
+            error = e.getMessage();
+        }
         return new Payslip(employeeDetails.getName(), employeeDetails.getStartDate(), getEndDate(), getGrossIncome(),
-                getIncomeTax(), getNetIncome(), getSuperannuation());
+                getIncomeTax(), getNetIncome(), getSuperannuation(), getError());
     }
 
     public LocalDate getEndDate() {
@@ -88,6 +94,10 @@ public class PayslipBuilder {
 
     public Integer getSuperannuation() {
         return superannuation;
+    }
+
+    public String getError() {
+        return error;
     }
 
 }
