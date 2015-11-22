@@ -1,6 +1,5 @@
 package com.example.payslip.tax;
 
-import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,12 +10,12 @@ import java.util.List;
  */
 public class FinancialYearIndividualTaxRate implements TaxRate {
 
-    private Year financialYear;
+    private int financialYear;
     private List<IndividualTaxRate> taxRates = new ArrayList<>();
 
-    public boolean accept(final Year year) {
+    public boolean accept(final int year) {
         boolean accepted = false;
-        if (financialYear.equals(year)) {
+        if (financialYear == year) {
             accepted = true;
         }
         return accepted;
@@ -38,11 +37,11 @@ public class FinancialYearIndividualTaxRate implements TaxRate {
         return tax;
     }
 
-    public Year getFinancialYear() {
+    public int getFinancialYear() {
         return financialYear;
     }
 
-    public void setFinancialYear(final Year financialYear) {
+    public void setFinancialYear(final int financialYear) {
         this.financialYear = financialYear;
     }
 

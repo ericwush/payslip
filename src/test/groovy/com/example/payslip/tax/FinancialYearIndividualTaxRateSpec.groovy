@@ -1,7 +1,5 @@
 package com.example.payslip.tax
 
-import java.time.Year
-
 import spock.lang.Specification
 
 class FinancialYearIndividualTaxRateSpec extends Specification {
@@ -31,8 +29,8 @@ class FinancialYearIndividualTaxRateSpec extends Specification {
         accepted == output
 
         where:
-        financialYear << [Year.of(2015), Year.of(2014)]
-        year << [Year.of(2015), Year.of(2015)]
+        financialYear << [2015, 2014]
+        year << [2015, 2015]
         output << [true, false]
     }
 
@@ -40,7 +38,7 @@ class FinancialYearIndividualTaxRateSpec extends Specification {
         when:
         IndividualTaxRate[] taxRates = [taxRate1, taxRate2, taxRate3]
         taxRate = Spy()
-        taxRate.financialYear = Year.of(2015)
+        taxRate.financialYear = 2015
         taxRate.taxRates = taxRates
         taxRate2.accept(_) >> taxRate2
         taxRate2.apply(_) >> output
@@ -60,7 +58,7 @@ class FinancialYearIndividualTaxRateSpec extends Specification {
         when:
         IndividualTaxRate[] taxRates = [taxRate1, taxRate2, taxRate3]
         taxRate = Spy()
-        taxRate.financialYear = Year.of(2015)
+        taxRate.financialYear = 2015
         taxRate.taxRates = taxRates
         def tax = taxRate.apply(income)
 
