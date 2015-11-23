@@ -19,10 +19,12 @@ class FinancialYearIndividualTaxRateSpec extends Specification {
     }
 
     def "test whether tax rate year is accepted"() {
-        when:
+        setup:
         taxRate = Spy()
         taxRate.financialYear = financialYear
         taxRate.taxRates = [taxRate1]
+
+        when:
         boolean accepted = taxRate.accept(year)
 
         then:
@@ -35,13 +37,15 @@ class FinancialYearIndividualTaxRateSpec extends Specification {
     }
 
     def "test applying tax rate"() {
-        when:
+        setup:
         IndividualTaxRate[] taxRates = [taxRate1, taxRate2, taxRate3]
         taxRate = Spy()
         taxRate.financialYear = 2015
         taxRate.taxRates = taxRates
         taxRate2.accept(_) >> taxRate2
         taxRate2.apply(_) >> output
+
+        when:
         def tax = taxRate.apply(income)
 
         then:
@@ -55,11 +59,13 @@ class FinancialYearIndividualTaxRateSpec extends Specification {
     }
 
     def "test no tax rate accepted for income"() {
-        when:
+        setup:
         IndividualTaxRate[] taxRates = [taxRate1, taxRate2, taxRate3]
         taxRate = Spy()
         taxRate.financialYear = financialYear
         taxRate.taxRates = taxRates
+
+        when:
         def tax = taxRate.apply(income)
 
         then:

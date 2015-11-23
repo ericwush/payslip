@@ -16,8 +16,10 @@ class DateHelperSpec extends Specification {
     }
 
     def "test end date calculation"() {
-        when:
+        setup:
         LocalDate startDate = LocalDate.of(2015, 11, 22)
+
+        when:
         LocalDate endDate = dateHelper.calcEndDate(startDate, PayPeriodType.MONTH)
 
         then:

@@ -2,6 +2,8 @@ package com.example.payslip;
 
 import java.time.LocalDate;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Employee details model.
  * @author ericwu
@@ -9,10 +11,15 @@ import java.time.LocalDate;
  */
 public class EmployeeDetails {
 
+    @NotNull(message = "Employee name cannot be null.")
     private String name;
+    @NotNull(message = "Invalid or null pay period type.")
     private PayPeriodType payPeriodType;
+    @NotNull(message = "Invalid or null start date.")
     private LocalDate startDate;
+    @NotNull(message = "Invalid or null annual salary.")
     private Integer annualSalary;
+    @NotNull(message = "Invalid or null super rate.")
     private Float superRate;
 
     public String getName() {

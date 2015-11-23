@@ -14,9 +14,11 @@ class IndividualTaxRateSpec extends Specification {
     }
 
     def "test whether tax rate is accepted"() {
-        when:
+        setup:
         taxRate.minIncome = minIncome
         taxRate.maxIncome = maxIncome
+
+        when:
         boolean accepted = taxRate.accept(income)
 
         then:
@@ -30,12 +32,12 @@ class IndividualTaxRateSpec extends Specification {
     }
 
     def "test applying tax rate"() {
-        when:
+        setup:
         taxRate.baseIncome = baseIncome
         taxRate.baseTax = baseTax
         taxRate.rate = rate
 
-        then:
+        expect:
         output == taxRate.apply(income)
 
         where:
@@ -47,10 +49,12 @@ class IndividualTaxRateSpec extends Specification {
     }
 
     def "test tax rate cannot be applied"() {
-        when:
+        setup:
         taxRate.baseIncome = 100
         taxRate.baseTax = null
         taxRate.rate = 0.1
+
+        when:
         taxRate.apply(1000)
 
         then:

@@ -1,6 +1,10 @@
 package com.example.payslip;
 
 import java.time.LocalDate;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 
 import com.example.payslip.tax.TaxCalculator;
 
@@ -11,93 +15,60 @@ import com.example.payslip.tax.TaxCalculator;
  */
 public class PayslipBuilder {
 
-    private final EmployeeDetails employeeDetails;
     private final DateHelper dateHelper;
     private final TaxCalculator taxCalculator;
-    private LocalDate endDate;
-    private Integer grossIncome;
-    private Integer incomeTax;
-    private Integer netIncome;
-    private Integer superannuation;
-    private String error;
+    private final Validator validator;
 
-    public PayslipBuilder(final EmployeeDetails employeeDetails, final DateHelper dateHelper,
-            final TaxCalculator taxCalculator) {
-        if (employeeDetails == null) {
-            throw new IllegalArgumentException("EmployeeDetails cannot be null");
-        }
+    public PayslipBuilder(final DateHelper dateHelper, final TaxCalculator taxCalculator, final Validator validator) {
         if (dateHelper == null) {
             throw new IllegalArgumentException("DateHelper cannot be null");
         }
         if (taxCalculator == null) {
             throw new IllegalArgumentException("TaxCalculator cannot be null");
         }
-        this.employeeDetails = employeeDetails;
+        if (validator == null) {
+            throw new IllegalArgumentException("Validator cannot be null");
+        }
+        this.validator = validator;
         this.dateHelper = dateHelper;
         this.taxCalculator = taxCalculator;
     }
 
-    public PayslipBuilder endDate() {
-        endDate = dateHelper.calcEndDate(employeeDetails.getStartDate(), employeeDetails.getPayPeriodType());
-        return this;
+    public LocalDate endDate(final EmployeeDetails employeeDetails) {
+        return dateHelper.calcEndDate(employeeDetails.getStartDate(), employeeDetails.getPayPeriodType());
     }
 
-    public PayslipBuilder grossIncome() {
-        if (employeeDetails.getPayPeriodType().getDivisor() != 0) {
-            grossIncome = Math.round(employeeDetails.getAnnualSalary().intValue()
-                    / employeeDetails.getPayPeriodType().getDivisor());
-        }
-        return this;
+    public Integer grossIncome(final EmployeeDetails employeeDetails) {
+        return Math.round(employeeDetails.getAnnualSalary().intValue() / employeeDetails.getPayPeriodType().getDivisor());
     }
 
-    public PayslipBuilder incomeTax() {
-        incomeTax = Math.round(taxCalculator.calc(dateHelper.findFinancialYear(employeeDetails.getStartDate()),
+    public Integer incomeTax(final EmployeeDetails employeeDetails) {
+        return Math.round(taxCalculator.calc(dateHelper.findFinancialYear(employeeDetails.getStartDate()),
                 employeeDetails.getAnnualSalary()) / employeeDetails.getPayPeriodType().getDivisor());
-        return this;
     }
 
-    public PayslipBuilder netIncome() {
-        netIncome = getGrossIncome().intValue() - getIncomeTax().intValue();
-        return this;
+    public Integer superannuation(final EmployeeDetails employeeDetails) {
+        return Math.round(grossIncome(employeeDetails) * employeeDetails.getSuperRate());
     }
 
-    public PayslipBuilder superannuation() {
-        superannuation = Math.round(getGrossIncome() * employeeDetails.getSuperRate());
-        return this;
-    }
-
-    public Payslip build() {
+    public Payslip build(final EmployeeDetails employeeDetails) {
+        Payslip payslip = null;
         try {
-            endDate().grossIncome().incomeTax().netIncome().superannuation();
-        } catch (Exception e) {
-            error = e.getMessage();
+            final Set<ConstraintViolation<EmployeeDetails>> violations = validator.validate(employeeDetails);
+            if (violations != null && violations.size() > 0) {
+                final StringBuilder error = new StringBuilder();
+                for (final ConstraintViolation<EmployeeDetails> violation : violations) {
+                    error.append(violation.getMessage()).append(" ");
+                }
+                throw new IllegalArgumentException(error.toString());
+            }
+            payslip = new Payslip(employeeDetails.getName(), employeeDetails.getStartDate(), endDate(employeeDetails),
+                    grossIncome(employeeDetails), incomeTax(employeeDetails), superannuation(employeeDetails), null);
+        } catch (final Exception e) {
+            payslip = new Payslip(employeeDetails.getName(), employeeDetails.getStartDate(), null,
+                    null, null, null, e.getMessage());
         }
-        return new Payslip(employeeDetails.getName(), employeeDetails.getStartDate(), getEndDate(), getGrossIncome(),
-                getIncomeTax(), getNetIncome(), getSuperannuation(), getError());
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public Integer getGrossIncome() {
-        return grossIncome;
-    }
-
-    public Integer getIncomeTax() {
-        return incomeTax;
-    }
-
-    public Integer getNetIncome() {
-        return netIncome;
-    }
-
-    public Integer getSuperannuation() {
-        return superannuation;
-    }
-
-    public String getError() {
-        return error;
+        return payslip;
     }
 
 }

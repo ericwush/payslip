@@ -1,5 +1,14 @@
 package com.example.payslip
 
+import static java.util.UUID.randomUUID
+
+import java.time.LocalDate
+
+import javax.validation.ConstraintViolation
+import javax.validation.Path
+import javax.validation.Validator
+import javax.validation.metadata.ConstraintDescriptor
+
 import spock.lang.Specification
 
 import com.example.payslip.tax.TaxCalculator
@@ -10,12 +19,14 @@ class PayslipBuilderSpec extends Specification {
     EmployeeDetails employeeDetails
     DateHelper dateHelper
     TaxCalculator taxCalculator
+    Validator validator
 
     def setup() {
         employeeDetails = Mock()
         dateHelper = Mock()
         taxCalculator = Mock()
-        payslipBuilder = Spy(constructorArgs: [employeeDetails, dateHelper, taxCalculator])
+        validator = Mock()
+        payslipBuilder = Spy(constructorArgs: [dateHelper, taxCalculator, validator])
     }
 
     def cleanup() {
@@ -23,22 +34,22 @@ class PayslipBuilderSpec extends Specification {
 
     def "test constructor"() {
         when:
-        payslipBuilder = new PayslipBuilder(employeeDetails1, dateHelper1, taxCalculator1)
+        payslipBuilder = new PayslipBuilder(dateHelper1, taxCalculator1, validator1)
 
         then:
         def e = thrown(IllegalArgumentException)
         e.message == message
 
         where:
-        employeeDetails1 << [null, Mock(EmployeeDetails), Mock(EmployeeDetails)]
-        dateHelper1 << [Mock(DateHelper), null, Mock(DateHelper)]
-        taxCalculator1 << [Mock(TaxCalculator), Mock(TaxCalculator), null]
-        message << ['EmployeeDetails cannot be null', 'DateHelper cannot be null', 'TaxCalculator cannot be null']
+        dateHelper1 << [null, Mock(DateHelper), Mock(DateHelper)]
+        taxCalculator1 << [Mock(TaxCalculator), null, Mock(TaxCalculator)]
+        validator1 << [Mock(Validator), Mock(Validator), null]
+        message << ['DateHelper cannot be null', 'TaxCalculator cannot be null', 'Validator cannot be null']
     }
 
     def "test end date"() {
         when:
-        payslipBuilder.endDate()
+        payslipBuilder.endDate(employeeDetails)
 
         then:
         1 * employeeDetails.getStartDate()
@@ -47,13 +58,15 @@ class PayslipBuilderSpec extends Specification {
     }
 
     def "test gross income"() {
-        when:
+        setup:
         employeeDetails.getPayPeriodType() >> PayPeriodType.MONTH
         employeeDetails.getAnnualSalary() >> annualSalary
-        payslipBuilder.grossIncome()
+
+        when:
+        def output = payslipBuilder.grossIncome(employeeDetails)
 
         then:
-        payslipBuilder.grossIncome == grossIncome
+        output == grossIncome
 
         where:
         annualSalary << [2401, 2600]
@@ -61,44 +74,33 @@ class PayslipBuilderSpec extends Specification {
     }
 
     def "test income tax"() {
-        when:
+        setup:
         dateHelper.findFinancialYear(_) >> 2015
         taxCalculator.calc(_, _) >> tax
         employeeDetails.getPayPeriodType() >> PayPeriodType.MONTH
         employeeDetails.getAnnualSalary() >> 1000
-        payslipBuilder.incomeTax()
+
+        when:
+        def output = payslipBuilder.incomeTax(employeeDetails)
 
         then:
-        payslipBuilder.incomeTax == incomeTax
+        output == incomeTax
 
         where:
         tax << [2401, 2600]
         incomeTax << [200, 216]
     }
 
-    def "test net income"() {
-        when:
-        payslipBuilder.getGrossIncome() >> grossIncome
-        payslipBuilder.getIncomeTax() >> incomeTax
-        payslipBuilder.netIncome()
-
-        then:
-        payslipBuilder.netIncome == netIncome
-
-        where:
-        grossIncome = 100
-        incomeTax = 25
-        netIncome = 75
-    }
-
     def "test superannuation" () {
-        when:
+        setup:
         employeeDetails.getSuperRate() >> superRate
-        payslipBuilder.getGrossIncome() >> grossIncome
-        payslipBuilder.superannuation()
+        payslipBuilder.grossIncome(employeeDetails) >> grossIncome
+
+        when:
+        def output = payslipBuilder.superannuation(employeeDetails)
 
         then:
-        payslipBuilder.superannuation == superannuation
+        output == superannuation
 
         where:
         superRate << [0.9, 0.4]
@@ -107,36 +109,153 @@ class PayslipBuilderSpec extends Specification {
     }
 
     def "test sucessful payslip build"() {
+        setup:
+        validator.validate(employeeDetails) >> null
+        employeeDetails.getName() >> name
+        employeeDetails.getStartDate() >> date
+        payslipBuilder.endDate(employeeDetails) >> date
+        payslipBuilder.grossIncome(employeeDetails) >> grossIncome
+        payslipBuilder.incomeTax(employeeDetails) >> incomeTax
+        payslipBuilder.superannuation(employeeDetails) >> superannuation
+
         when:
-        employeeDetails.getPayPeriodType() >> PayPeriodType.MONTH
-        employeeDetails.getAnnualSalary() >> 1000
-        dateHelper.findFinancialYear(_) >> 2015
-        taxCalculator.calc(_, _) >> 100
-        employeeDetails.getSuperRate() >> 0.9
-        payslipBuilder.build()
+        def payslip = payslipBuilder.build(employeeDetails)
 
         then:
-        1 * payslipBuilder.endDate()
-        1 * payslipBuilder.grossIncome()
-        1 * payslipBuilder.incomeTax()
-        1 * payslipBuilder.netIncome()
-        1 * payslipBuilder.superannuation()
+        payslip.name == name
+        payslip.startDate == date
+        payslip.endDate == date
+        payslip.grossIncome == grossIncome
+        payslip.incomeTax == incomeTax
+        payslip.superannuation == superannuation
+        payslip.error == null
+
+        where:
+        name = randomUUID() as String
+        date = new LocalDate(2015, 11, 20)
+        grossIncome = new Random().nextInt(10000)
+        incomeTax = new Random().nextInt(1000)
+        superannuation = new Random().nextInt(500)
+    }
+
+    def "test invalid employee details"() {
+        setup:
+        validator.validate(employeeDetails) >> [new CustomConstraintViolation(), new CustomConstraintViolation()]
+        employeeDetails.getName() >> name
+        employeeDetails.getStartDate() >> date
+        payslipBuilder.endDate(employeeDetails) >> date
+        payslipBuilder.grossIncome(employeeDetails) >> grossIncome
+        payslipBuilder.incomeTax(employeeDetails) >> incomeTax
+        payslipBuilder.superannuation(employeeDetails) >> { throw new Exception(message) }
+
+        when:
+        def payslip = payslipBuilder.build(employeeDetails)
+
+        then:
+        payslip.name == name
+        payslip.startDate == date
+        payslip.endDate == null
+        payslip.grossIncome == null
+        payslip.incomeTax == null
+        payslip.superannuation == null
+        payslip.error == message
+
+        where:
+        message = "some error some error "
+        name = randomUUID() as String
+        date = new LocalDate(2015, 11, 20)
+        grossIncome = new Random().nextInt(10000)
+        incomeTax = new Random().nextInt(1000)
+        superannuation = new Random().nextInt(500)
     }
 
     def "test failed payslip build"() {
+        setup:
+        validator.validate(employeeDetails) >> null
+        employeeDetails.getName() >> name
+        employeeDetails.getStartDate() >> date
+        payslipBuilder.endDate(employeeDetails) >> date
+        payslipBuilder.grossIncome(employeeDetails) >> grossIncome
+        payslipBuilder.incomeTax(employeeDetails) >> incomeTax
+        payslipBuilder.superannuation(employeeDetails) >> { throw new Exception(message) }
+
         when:
-        employeeDetails.getPayPeriodType() >> PayPeriodType.MONTH
-        employeeDetails.getAnnualSalary() >> 1000
-        dateHelper.findFinancialYear(_) >> 2015
-        employeeDetails.getSuperRate() >> 0.9
-        taxCalculator.calc(_, _) >> {throw new IllegalStateException(message)}
-        payslipBuilder.build()
+        def payslip = payslipBuilder.build(employeeDetails)
 
         then:
-        payslipBuilder.error == message
+        payslip.name == name
+        payslip.startDate == date
+        payslip.endDate == null
+        payslip.grossIncome == null
+        payslip.incomeTax == null
+        payslip.superannuation == null
+        payslip.error == message
 
         where:
-        message = "failed"
+        message = randomUUID() as String
+        name = randomUUID() as String
+        date = new LocalDate(2015, 11, 20)
+        grossIncome = new Random().nextInt(10000)
+        incomeTax = new Random().nextInt(1000)
+        superannuation = new Random().nextInt(500)
+    }
+
+    class CustomConstraintViolation implements ConstraintViolation {
+
+        @Override
+        String getMessage() {
+            return 'some error'
+        }
+
+        @Override
+        String getMessageTemplate() {
+            return null
+        }
+
+        @Override
+        Object getRootBean() {
+            return null
+        }
+
+        @Override
+        Class getRootBeanClass() {
+            return null
+        }
+
+        @Override
+        Object getLeafBean() {
+            return null
+        }
+
+        @Override
+        Object[] getExecutableParameters() {
+            return null
+        }
+
+        @Override
+        Object getExecutableReturnValue() {
+            return null
+        }
+
+        @Override
+        Path getPropertyPath() {
+            return null
+        }
+
+        @Override
+        Object getInvalidValue() {
+            return null
+        }
+
+        @Override
+        ConstraintDescriptor getConstraintDescriptor() {
+            return null
+        }
+
+        @Override
+        Object unwrap(Class type) {
+            return null
+        }
     }
 
 }

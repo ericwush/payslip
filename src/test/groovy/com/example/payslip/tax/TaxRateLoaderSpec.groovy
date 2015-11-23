@@ -28,8 +28,10 @@ class TaxRateLoaderSpec extends Specification {
     }
 
     def "test mapper cannot map json to object"() {
-        when:
+        setup:
         mapper.readValue(inputStream, FinancialYearIndividualTaxRate.class) >> {throw new Exception()}
+
+        when:
         def taxRate = taxRateLoader.mapTaxRateFile(inputStream)
 
         then:

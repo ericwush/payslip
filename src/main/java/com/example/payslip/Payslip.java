@@ -14,18 +14,16 @@ public class Payslip {
     private final LocalDate endDate;
     private final Integer grossIncome;
     private final Integer incomeTax;
-    private final Integer netIncome;
     private final Integer superannuation;
     private final String error;
 
     public Payslip(final String name, final LocalDate startDate, final LocalDate endDate, final Integer grossIncome,
-            final Integer incomeTax, final Integer netIncome, final Integer superannuation, final String error) {
+            final Integer incomeTax, final Integer superannuation, final String error) {
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
         this.grossIncome = grossIncome;
         this.incomeTax = incomeTax;
-        this.netIncome = netIncome;
         this.superannuation = superannuation;
         this.error = error;
     }
@@ -51,7 +49,7 @@ public class Payslip {
     }
 
     public Integer getNetIncome() {
-        return netIncome;
+        return grossIncome.intValue() - incomeTax.intValue();
     }
 
     public Integer getSuperannuation() {
