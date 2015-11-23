@@ -49,7 +49,11 @@ public class Payslip {
     }
 
     public Integer getNetIncome() {
-        return grossIncome.intValue() - incomeTax.intValue();
+        Integer netIncome = null;
+        if (grossIncome != null && incomeTax != null) {
+            netIncome = grossIncome.intValue() - incomeTax.intValue();
+        }
+        return netIncome;
     }
 
     public Integer getSuperannuation() {

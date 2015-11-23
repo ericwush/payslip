@@ -23,9 +23,9 @@ class PayslipSpec extends Specification {
         netIncome == payslip.netIncome
 
         where:
-        grossIncome = 1000
-        incomeTax = 10
-        netIncome = 990
+        grossIncome << [1000, null, 1000]
+        incomeTax << [10, 10, null]
+        netIncome << [990, null, null]
     }
 
 }

@@ -20,7 +20,7 @@ class TaxCalculatorSpec extends Specification {
 
     def "test tax calculation"() {
         setup:
-        FinancialYearIndividualTaxRate[] taxRates = [taxRate1, taxRate2, taxRate3]
+        def taxRates = [taxRate1, taxRate2, taxRate3]
         taxCalculator = Spy(constructorArgs: [taxRates])
         taxRate2.accept(year) >> taxRate2
         taxRate2.apply(taxable) >> output
@@ -41,7 +41,7 @@ class TaxCalculatorSpec extends Specification {
 
     def "test no tax rate found for income"() {
         setup:
-        FinancialYearIndividualTaxRate[] taxRates = [taxRate1, taxRate2, taxRate3]
+        def taxRates = [taxRate1, taxRate2, taxRate3]
         taxCalculator = Spy(constructorArgs: [taxRates])
 
         when:

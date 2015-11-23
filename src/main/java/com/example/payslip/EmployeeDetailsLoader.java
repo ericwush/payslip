@@ -1,6 +1,5 @@
 package com.example.payslip;
 
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,22 +9,24 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.opencsv.CSVReader;
+
 public class EmployeeDetailsLoader {
 
     public List<EmployeeDetails> load(String csvFilename) {
         List<EmployeeDetails> employeeDetailsList = null;
         if (csvFilename != null) {
-            String line = "";
-            String cvsSplitBy = ",";
             EmployeeDetails employeeDetails;
             employeeDetailsList = new ArrayList<>();
-            try (BufferedReader input = new BufferedReader(
+            boolean header = true;
+            try (CSVReader csvReader = new CSVReader(
                     new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(csvFilename)))) {
-                while ((line = input.readLine()) != null) {
-                    if (line.startsWith("#")) {
+                String[] fields;
+                while ((fields = csvReader.readNext()) != null) {
+                    if (header) {
+                        header = false;
                         continue;
                     }
-                    String[] fields = line.split(cvsSplitBy);
                     employeeDetails = new EmployeeDetails();
                     employeeDetails.setName(fields[0]);
                     employeeDetails.setAnnualSalary(getAnnualSalary(fields[1]));

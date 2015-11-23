@@ -3,7 +3,6 @@ apply plugin: "net.saliman.cobertura"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-version = '1.0'
 
 buildscript {
     repositories {
@@ -24,10 +23,20 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind:2.6.3'
     compile 'commons-io:commons-io:2.4'
     compile 'javax.validation:validation-api:1.1.0.Final'
+    compile 'com.opencsv:opencsv:3.6'
     runtime 'org.hibernate:hibernate-validator:5.2.2.Final'
     runtime 'javax.el:javax.el-api:3.0.0'
     testCompile 'org.codehaus.groovy:groovy-all:2.4.4'
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
     testRuntime 'cglib:cglib-nodep:3.2.0'
     testRuntime 'org.slf4j:slf4j-nop:1.7.12'
+}
+
+jar {
+    manifest { attributes "Main-Class": "com.example.payslip.PayslipGenerator" }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }

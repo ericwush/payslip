@@ -1,6 +1,5 @@
 package com.example.payslip.tax;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,15 +9,10 @@ import java.util.List;
  */
 public class TaxCalculator {
 
-    private List<FinancialYearIndividualTaxRate> taxRates;
+    private final List<FinancialYearIndividualTaxRate> taxRates;
 
-    public TaxCalculator(FinancialYearIndividualTaxRate... taxRates) {
-        if (this.taxRates == null) {
-            this.taxRates = new ArrayList<>();
-        }
-        for (FinancialYearIndividualTaxRate taxRate : taxRates) {
-            this.taxRates.add(taxRate);
-        }
+    public TaxCalculator(List<FinancialYearIndividualTaxRate> taxRates) {
+        this.taxRates = taxRates;
     }
 
     public Integer calc(int year, int taxable) {
