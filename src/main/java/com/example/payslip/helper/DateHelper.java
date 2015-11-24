@@ -1,8 +1,10 @@
-package com.example.payslip;
+package com.example.payslip.helper;
 
 import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 
 import java.time.LocalDate;
+
+import com.example.payslip.PayPeriodType;
 
 /**
  * Date related helper class.

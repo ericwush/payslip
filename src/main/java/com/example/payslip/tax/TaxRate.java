@@ -7,6 +7,6 @@ package com.example.payslip.tax;
  */
 public interface TaxRate {
 
-    Integer apply(Integer taxable);
+    Float apply(Integer taxable);
 
 }

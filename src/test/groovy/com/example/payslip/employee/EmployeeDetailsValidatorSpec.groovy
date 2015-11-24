@@ -1,8 +1,10 @@
-package com.example.payslip
+package com.example.payslip.employee
 
 import javax.validation.ConstraintViolation
 import javax.validation.Validation
 import javax.validation.Validator
+
+import com.example.payslip.employee.EmployeeDetails;
 
 import spock.lang.Specification
 

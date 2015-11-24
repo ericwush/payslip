@@ -1,6 +1,9 @@
-package com.example.payslip
+package com.example.payslip.employee
 
 import java.time.LocalDate
+
+import com.example.payslip.PayPeriodType;
+import com.example.payslip.employee.EmployeeDetailsLoader;
 
 import spock.lang.Specification
 

@@ -15,8 +15,8 @@ public class TaxCalculator {
         this.taxRates = taxRates;
     }
 
-    public Integer calc(int year, int taxable) {
-        Integer tax = null;
+    public Float calc(int year, int taxable) {
+        Float tax = null;
         TaxRate rate = null;
         for (final FinancialYearIndividualTaxRate taxRate : taxRates) {
             if (taxRate.accept(year)) {

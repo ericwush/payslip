@@ -64,4 +64,25 @@ public class Payslip {
         return error;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getName())
+            .append(",")
+            .append(getStartDate() != null ? getStartDate().toString() : "")
+            .append(",")
+            .append(getEndDate() != null ? getEndDate().toString() : "")
+            .append(",")
+            .append(getGrossIncome() != null ? getGrossIncome().toString() : "")
+            .append(",")
+            .append(getIncomeTax() != null ? getIncomeTax().toString() : "")
+            .append(",")
+            .append(getNetIncome() != null ? getNetIncome().toString() : "")
+            .append(",")
+            .append(getSuperannuation() != null ? getSuperannuation().toString() : "")
+            .append(",")
+            .append(getError() != null ? getError().toString() : "");
+        return sb.toString();
+    }
+
 }

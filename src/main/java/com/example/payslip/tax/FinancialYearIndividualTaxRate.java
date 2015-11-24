@@ -22,8 +22,8 @@ public class FinancialYearIndividualTaxRate implements TaxRate {
     }
 
     @Override
-    public Integer apply(final Integer taxable) {
-        Integer tax = null;
+    public Float apply(final Integer taxable) {
+        Float tax = null;
         TaxRate rate = null;
         for (final IndividualTaxRate taxRate : taxRates) {
             if (taxRate.accept(taxable)) {

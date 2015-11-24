@@ -23,10 +23,10 @@ public class IndividualTaxRate implements TaxRate {
     }
 
     @Override
-    public Integer apply(final Integer taxable) {
-        Integer tax;
+    public Float apply(final Integer taxable) {
+        Float tax;
         try {
-            tax = Math.round(baseTax.intValue() + (taxable.intValue() - baseIncome.intValue()) * rate);
+            tax = baseTax.intValue() + (taxable.intValue() - baseIncome.intValue()) * rate;
         } catch (Exception e) {
             throw new IllegalStateException("Failed to apply tax rate.");
         }

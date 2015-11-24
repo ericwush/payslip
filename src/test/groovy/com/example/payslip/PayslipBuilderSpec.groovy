@@ -11,6 +11,8 @@ import javax.validation.metadata.ConstraintDescriptor
 
 import spock.lang.Specification
 
+import com.example.payslip.employee.EmployeeDetails;
+import com.example.payslip.helper.DateHelper;
 import com.example.payslip.tax.TaxCalculator
 
 class PayslipBuilderSpec extends Specification {
@@ -69,8 +71,8 @@ class PayslipBuilderSpec extends Specification {
         output == grossIncome
 
         where:
-        annualSalary << [2401, 2600]
-        grossIncome << [200, 216]
+        annualSalary << [2401, 2600, 200000]
+        grossIncome << [200, 217, 16667]
     }
 
     def "test income tax"() {
@@ -87,8 +89,8 @@ class PayslipBuilderSpec extends Specification {
         output == incomeTax
 
         where:
-        tax << [2401, 2600]
-        incomeTax << [200, 216]
+        tax << [2401, 2600, 200000]
+        incomeTax << [200, 217, 16667]
     }
 
     def "test superannuation" () {
@@ -103,9 +105,9 @@ class PayslipBuilderSpec extends Specification {
         output == superannuation
 
         where:
-        superRate << [0.9, 0.4]
-        grossIncome << [123, 101]
-        superannuation << [111, 40]
+        superRate << [0.9, 0.4, 0.93]
+        grossIncome << [123, 101, 1234]
+        superannuation << [111, 40, 1148]
     }
 
     def "test sucessful payslip build"() {

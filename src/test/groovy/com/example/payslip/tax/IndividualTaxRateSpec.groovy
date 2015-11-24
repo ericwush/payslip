@@ -45,7 +45,7 @@ class IndividualTaxRateSpec extends Specification {
         baseIncome << [100, 0, 0]
         baseTax << [50, 0, 10]
         rate << [0.5, 0.3, 0.325]
-        output << [75, 45, 59]
+        output << [75, 45, 58.75]
     }
 
     def "test tax rate cannot be applied"() {

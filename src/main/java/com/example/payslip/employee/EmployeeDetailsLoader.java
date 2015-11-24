@@ -1,4 +1,4 @@
-package com.example.payslip;
+package com.example.payslip.employee;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -9,6 +9,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.payslip.PayPeriodType;
 import com.opencsv.CSVReader;
 
 public class EmployeeDetailsLoader {

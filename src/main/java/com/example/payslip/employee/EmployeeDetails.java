@@ -1,8 +1,10 @@
-package com.example.payslip;
+package com.example.payslip.employee;
 
 import java.time.LocalDate;
 
 import javax.validation.constraints.NotNull;
+
+import com.example.payslip.PayPeriodType;
 
 /**
  * Employee details model.

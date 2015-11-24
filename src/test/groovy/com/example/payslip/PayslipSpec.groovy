@@ -28,4 +28,13 @@ class PayslipSpec extends Specification {
         netIncome << [990, null, null]
     }
 
+    def "test to string"() {
+        when:
+        payslip = new Payslip('name', new LocalDate(2015, 11, 10), new LocalDate(2015, 11, 10), 10000,
+            1000, 100, 'error')
+
+        then:
+        payslip.toString() == 'name,2015-11-10,2015-11-10,10000,1000,9000,100,error'
+    }
+
 }

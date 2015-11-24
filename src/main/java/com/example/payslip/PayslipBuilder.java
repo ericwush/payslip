@@ -6,6 +6,8 @@ import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
+import com.example.payslip.employee.EmployeeDetails;
+import com.example.payslip.helper.DateHelper;
 import com.example.payslip.tax.TaxCalculator;
 
 /**
@@ -39,7 +41,8 @@ public class PayslipBuilder {
     }
 
     public Integer grossIncome(final EmployeeDetails employeeDetails) {
-        return Math.round(employeeDetails.getAnnualSalary().intValue() / employeeDetails.getPayPeriodType().getDivisor());
+        return Math.round((float) employeeDetails.getAnnualSalary().intValue()
+                / (float) employeeDetails.getPayPeriodType().getDivisor());
     }
 
     public Integer incomeTax(final EmployeeDetails employeeDetails) {
@@ -48,7 +51,7 @@ public class PayslipBuilder {
     }
 
     public Integer superannuation(final EmployeeDetails employeeDetails) {
-        return Math.round(grossIncome(employeeDetails) * employeeDetails.getSuperRate());
+        return Math.round((float) grossIncome(employeeDetails) * employeeDetails.getSuperRate());
     }
 
     public Payslip build(final EmployeeDetails employeeDetails) {
