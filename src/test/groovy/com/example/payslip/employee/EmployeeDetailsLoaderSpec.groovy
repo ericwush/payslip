@@ -2,10 +2,9 @@ package com.example.payslip.employee
 
 import java.time.LocalDate
 
-import com.example.payslip.PayPeriodType;
-import com.example.payslip.employee.EmployeeDetailsLoader;
-
 import spock.lang.Specification
+
+import com.example.payslip.PayPeriodType
 
 class EmployeeDetailsLoaderSpec extends Specification {
 
@@ -51,7 +50,7 @@ class EmployeeDetailsLoaderSpec extends Specification {
 
         where:
         field << ['1/4/2015', '01/04/2015', '1/4/15', 'text']
-        startDate << [null, new LocalDate(2015, 4, 1), null, null]
+        startDate << [null, LocalDate.of(2015, 4, 1), null, null]
     }
 
 }

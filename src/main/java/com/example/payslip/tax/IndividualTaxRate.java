@@ -27,7 +27,7 @@ public class IndividualTaxRate implements TaxRate {
         Float tax;
         try {
             tax = baseTax.intValue() + (taxable.intValue() - baseIncome.intValue()) * rate;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new IllegalStateException("Failed to apply tax rate.");
         }
         return tax;

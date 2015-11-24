@@ -66,7 +66,7 @@ public class Payslip {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append(getName())
             .append(",")
             .append(getStartDate() != null ? getStartDate().toString() : "")

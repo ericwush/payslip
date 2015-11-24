@@ -1,7 +1,5 @@
 package com.example.payslip.employee;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -14,7 +12,7 @@ import com.opencsv.CSVReader;
 
 public class EmployeeDetailsLoader {
 
-    public List<EmployeeDetails> load(String csvFilename) {
+    public List<EmployeeDetails> load(final String csvFilename) {
         List<EmployeeDetails> employeeDetailsList = null;
         if (csvFilename != null) {
             EmployeeDetails employeeDetails;
@@ -36,51 +34,49 @@ public class EmployeeDetailsLoader {
                     employeeDetails.setStartDate(getStartDate(fields[4]));
                     employeeDetailsList.add(employeeDetails);
                 }
-            } catch (FileNotFoundException e) {
-                throw new IllegalArgumentException("File " + csvFilename + "not found.");
-            } catch (IOException e) {
+            } catch (final Exception e) {
                 throw new IllegalStateException("Failed to read file " + csvFilename + ".");
             }
         }
         return employeeDetailsList;
     }
 
-    public Integer getAnnualSalary(String field) {
+    public Integer getAnnualSalary(final String field) {
         Integer annualSalary = null;
         try {
             annualSalary = Integer.valueOf(field);
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             annualSalary = null;
         }
         return annualSalary;
     }
 
-    public Float getSuperRate(String field) {
+    public Float getSuperRate(final String field) {
         Float superRate = null;
         try {
             superRate = Float.valueOf(field) / 100;
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             superRate = null;
         }
         return superRate;
     }
 
-    public PayPeriodType getPayPeriodType(String field) {
+    public PayPeriodType getPayPeriodType(final String field) {
         PayPeriodType payPeriodType = null;
         try {
             payPeriodType = PayPeriodType.valueOf(field);
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             payPeriodType = null;
         }
         return payPeriodType;
     }
 
-    public LocalDate getStartDate(String field) {
+    public LocalDate getStartDate(final String field) {
         LocalDate startDate = null;
         try {
-            DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            final DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             startDate = LocalDate.parse(field, format);
-        } catch (DateTimeParseException e) {
+        } catch (final DateTimeParseException e) {
             startDate = null;
         }
         return startDate;

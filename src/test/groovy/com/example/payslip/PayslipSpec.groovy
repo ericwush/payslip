@@ -16,7 +16,7 @@ class PayslipSpec extends Specification {
 
     def "test net income"() {
         when:
-        payslip = new Payslip('name', new LocalDate(2015, 11, 10), new LocalDate(2015, 11, 10), grossIncome,
+        payslip = new Payslip('name', LocalDate.of(2015, 11, 10), LocalDate.of(2015, 11, 10), grossIncome,
             incomeTax, 100, null)
 
         then:
@@ -30,7 +30,7 @@ class PayslipSpec extends Specification {
 
     def "test to string"() {
         when:
-        payslip = new Payslip('name', new LocalDate(2015, 11, 10), new LocalDate(2015, 11, 10), 10000,
+        payslip = new Payslip('name', LocalDate.of(2015, 11, 10), LocalDate.of(2015, 11, 10), 10000,
             1000, 100, 'error')
 
         then:

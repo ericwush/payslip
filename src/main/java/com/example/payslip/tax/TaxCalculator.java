@@ -11,11 +11,11 @@ public class TaxCalculator {
 
     private final List<FinancialYearIndividualTaxRate> taxRates;
 
-    public TaxCalculator(List<FinancialYearIndividualTaxRate> taxRates) {
+    public TaxCalculator(final List<FinancialYearIndividualTaxRate> taxRates) {
         this.taxRates = taxRates;
     }
 
-    public Float calc(int year, int taxable) {
+    public Float calc(final int year, final int taxable) {
         Float tax = null;
         TaxRate rate = null;
         for (final FinancialYearIndividualTaxRate taxRate : taxRates) {

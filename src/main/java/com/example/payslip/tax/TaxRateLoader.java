@@ -11,17 +11,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class TaxRateLoader {
 
+    private final static String PATH = "tax/";
+
     private final ObjectMapper mapper;
 
     public TaxRateLoader(final ObjectMapper mapper) {
         this.mapper = mapper;
     }
 
-    public List<String> getTaxRateFilenames() {
+    public List<String> getTaxRateFilenames(final String path) {
         List<String> filenames;
         try {
             filenames = IOUtils.readLines(TaxRateLoader.class.getClassLoader()
-                    .getResourceAsStream("tax/"), Charsets.UTF_8);
+                    .getResourceAsStream(path), Charsets.UTF_8);
         } catch (final Exception e) {
             filenames = null;
         }
@@ -40,12 +42,12 @@ public class TaxRateLoader {
 
     public List<FinancialYearIndividualTaxRate> load() {
         List<FinancialYearIndividualTaxRate> taxRates = null;
-        final List<String> filenames = getTaxRateFilenames();
+        final List<String> filenames = getTaxRateFilenames(PATH);
         if (filenames != null) {
             taxRates = new ArrayList<>();
             for (final String filename : filenames) {
                 taxRates.add(
-                        mapTaxRateFile(TaxRateLoader.class.getClassLoader().getResourceAsStream("tax/" + filename)));
+                        mapTaxRateFile(TaxRateLoader.class.getClassLoader().getResourceAsStream(PATH + filename)));
             }
         }
         return taxRates;

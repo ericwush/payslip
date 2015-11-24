@@ -11,8 +11,8 @@ import javax.validation.metadata.ConstraintDescriptor
 
 import spock.lang.Specification
 
-import com.example.payslip.employee.EmployeeDetails;
-import com.example.payslip.helper.DateHelper;
+import com.example.payslip.employee.EmployeeDetails
+import com.example.payslip.helper.DateHelper
 import com.example.payslip.tax.TaxCalculator
 
 class PayslipBuilderSpec extends Specification {
@@ -134,7 +134,7 @@ class PayslipBuilderSpec extends Specification {
 
         where:
         name = randomUUID() as String
-        date = new LocalDate(2015, 11, 20)
+        date = LocalDate.of(2015, 11, 20)
         grossIncome = new Random().nextInt(10000)
         incomeTax = new Random().nextInt(1000)
         superannuation = new Random().nextInt(500)
@@ -165,7 +165,7 @@ class PayslipBuilderSpec extends Specification {
         where:
         message = "some error some error "
         name = randomUUID() as String
-        date = new LocalDate(2015, 11, 20)
+        date = LocalDate.of(2015, 11, 20)
         grossIncome = new Random().nextInt(10000)
         incomeTax = new Random().nextInt(1000)
         superannuation = new Random().nextInt(500)
@@ -196,7 +196,7 @@ class PayslipBuilderSpec extends Specification {
         where:
         message = randomUUID() as String
         name = randomUUID() as String
-        date = new LocalDate(2015, 11, 20)
+        date = LocalDate.of(2015, 11, 20)
         grossIncome = new Random().nextInt(10000)
         incomeTax = new Random().nextInt(1000)
         superannuation = new Random().nextInt(500)
