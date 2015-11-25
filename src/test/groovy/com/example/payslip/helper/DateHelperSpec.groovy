@@ -23,7 +23,7 @@ class DateHelperSpec extends Specification {
         LocalDate startDate = LocalDate.of(2015, 11, 22)
 
         when:
-        LocalDate endDate = dateHelper.calcEndDate(startDate, PayPeriodType.MONTH)
+        LocalDate endDate = dateHelper.calcEndDate(startDate, PayPeriodType.MONTHLY)
 
         then:
         endDate == LocalDate.of(2015, 11, 30)

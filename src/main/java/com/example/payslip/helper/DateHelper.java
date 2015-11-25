@@ -17,7 +17,7 @@ public class DateHelper {
         LocalDate endDate = null;
         if (startDate != null && payPeriodType != null) {
             switch (payPeriodType) {
-                case MONTH:
+                case MONTHLY:
                     endDate = startDate.with(lastDayOfMonth());
                     break;
                 default:

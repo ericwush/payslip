@@ -14,6 +14,11 @@ import com.example.payslip.tax.TaxCalculator;
 import com.example.payslip.tax.TaxRateLoader;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Generate payslips to specified output csv file by given input csv file.
+ * @author ericwu
+ *
+ */
 public class PayslipGenerator {
 
     private final EmployeeDetailsLoader employeeDetailsLoader;
@@ -37,15 +42,15 @@ public class PayslipGenerator {
     }
 
     public static void main(final String[] args) {
-        if (args.length < 2) {
-            throw new IllegalArgumentException("Must provide input and output csv filenames.");
+        if (args.length != 3) {
+            throw new IllegalArgumentException("Must provide input, output csv filenames and tax rates filename");
         }
         final TaxRateLoader taxRateLoader = new TaxRateLoader(new ObjectMapper());
         final EmployeeDetailsLoader employeeDetailsLoader = new EmployeeDetailsLoader();
         final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         final Validator validator = factory.getValidator();
-        final PayslipBuilder payslipBuilder = new PayslipBuilder(new DateHelper(), new TaxCalculator(taxRateLoader.load()),
-                validator);
+        final PayslipBuilder payslipBuilder =
+                new PayslipBuilder(new DateHelper(), new TaxCalculator(taxRateLoader.load(args[2])), validator);
         final PayslipWriter payslipWriter = new PayslipWriter();
         final PayslipGenerator payslipGenerator = new PayslipGenerator(employeeDetailsLoader, payslipBuilder, payslipWriter);
         payslipGenerator.generate(args[0], args[1]);

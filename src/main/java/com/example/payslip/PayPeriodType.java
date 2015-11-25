@@ -7,7 +7,7 @@ package com.example.payslip;
  */
 public enum PayPeriodType {
 
-    MONTH(12);
+    MONTHLY(12);
 
     private final int divisor;
 

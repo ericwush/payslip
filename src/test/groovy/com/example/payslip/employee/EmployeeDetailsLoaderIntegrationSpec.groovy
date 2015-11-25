@@ -26,12 +26,12 @@ class EmployeeDetailsLoaderIntegrationSpec extends Specification {
         employeeDetails[0].name == 'David Rudd'
         employeeDetails[0].annualSalary == 60050
         employeeDetails[0].superRate == 0.09f
-        employeeDetails[0].payPeriodType == PayPeriodType.MONTH
+        employeeDetails[0].payPeriodType == PayPeriodType.MONTHLY
         employeeDetails[0].startDate == LocalDate.of(2012, 11, 1)
         employeeDetails[1].name == 'Ryan Chen'
         employeeDetails[1].annualSalary == 120000
         employeeDetails[1].superRate == 0.1f
-        employeeDetails[1].payPeriodType == PayPeriodType.MONTH
+        employeeDetails[1].payPeriodType == PayPeriodType.MONTHLY
         employeeDetails[1].startDate == LocalDate.of(2012, 11, 1)
     }
 

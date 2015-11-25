@@ -10,6 +10,11 @@ import java.util.List;
 import com.example.payslip.PayPeriodType;
 import com.opencsv.CSVReader;
 
+/**
+ * Employee details loader which loads the given csv file and maps into EmployeeDetails model.
+ * @author ericwu
+ *
+ */
 public class EmployeeDetailsLoader {
 
     public List<EmployeeDetails> load(final String csvFilename) {
@@ -27,7 +32,7 @@ public class EmployeeDetailsLoader {
                         continue;
                     }
                     employeeDetails = new EmployeeDetails();
-                    employeeDetails.setName(fields[0]);
+                    employeeDetails.setName(getName(fields[0]));
                     employeeDetails.setAnnualSalary(getAnnualSalary(fields[1]));
                     employeeDetails.setSuperRate(getSuperRate(fields[2]));
                     employeeDetails.setPayPeriodType(getPayPeriodType(fields[3]));
@@ -35,10 +40,19 @@ public class EmployeeDetailsLoader {
                     employeeDetailsList.add(employeeDetails);
                 }
             } catch (final Exception e) {
+                e.printStackTrace();
                 throw new IllegalStateException("Failed to read file " + csvFilename + ".");
             }
         }
         return employeeDetailsList;
+    }
+
+    public String getName(String field) {
+        String name = null;
+        if (field != null && field.trim().length() > 0) {
+            name = field.trim();
+        }
+        return name;
     }
 
     public Integer getAnnualSalary(final String field) {

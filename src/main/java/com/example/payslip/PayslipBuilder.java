@@ -11,7 +11,7 @@ import com.example.payslip.helper.DateHelper;
 import com.example.payslip.tax.TaxCalculator;
 
 /**
- * Build payslip based on employee details and tax calculator.
+ * Build payslip based on validated employee details and tax calculator.
  * @author ericwu
  *
  */
@@ -60,10 +60,10 @@ public class PayslipBuilder {
             final Set<ConstraintViolation<EmployeeDetails>> violations = validator.validate(employeeDetails);
             if (violations != null && violations.size() > 0) {
                 final StringBuilder error = new StringBuilder();
-                for (final ConstraintViolation<EmployeeDetails> violation : violations) {
+                violations.forEach(violation -> {
                     error.append(violation.getMessage()).append(" ");
-                }
-                throw new IllegalArgumentException(error.toString());
+                });
+                throw new IllegalArgumentException(error.toString().trim());
             }
             payslip = new Payslip(employeeDetails.getName(), employeeDetails.getStartDate(), endDate(employeeDetails),
                     grossIncome(employeeDetails), incomeTax(employeeDetails), superannuation(employeeDetails), null);

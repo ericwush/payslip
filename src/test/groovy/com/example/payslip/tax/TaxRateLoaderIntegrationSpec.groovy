@@ -17,7 +17,7 @@ class TaxRateLoaderIntegrationSpec extends Specification {
 
     def "test loading tax rates"() {
         when:
-        List<FinancialYearIndividualTaxRate> taxRates = taxRateLoader.load()
+        List<FinancialYearIndividualTaxRate> taxRates = taxRateLoader.load('tax.json')
 
         then:
         taxRates.size() == 2
@@ -32,7 +32,7 @@ class TaxRateLoaderIntegrationSpec extends Specification {
 
     def "test tax rate filenames not found"() {
         expect:
-        taxRateLoader.getTaxRateFilenames('notfound') == null
+        taxRateLoader.load('notfound') == null
     }
 
 }

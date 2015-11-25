@@ -6,6 +6,11 @@ import java.util.List;
 
 import com.opencsv.CSVWriter;
 
+/**
+ * Write payslips into specified file.
+ * @author ericwu
+ *
+ */
 public class PayslipWriter {
 
     public void write(final String filename, final List<Payslip> payslips) {
@@ -15,7 +20,7 @@ public class PayslipWriter {
             writer.writeNext(headers);
 
             payslips.forEach(payslip -> {
-                final String[] record = payslip.toString().split(",");
+                final String[] record = payslip.toString().split(",", -1);
                 writer.writeNext(record);
             });
             writer.flush();

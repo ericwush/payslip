@@ -3,7 +3,8 @@ package com.example.payslip;
 import java.time.LocalDate;
 
 /**
- * Immutable payslip model.
+ * Payslip model.
+ * Since modification on one element will affect the value of other elements, so it is immutable.
  * @author ericwu
  *
  */

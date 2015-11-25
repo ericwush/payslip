@@ -17,6 +17,15 @@ class EmployeeDetailsLoaderSpec extends Specification {
     def cleanup() {
     }
 
+    def "test get name"() {
+        expect:
+        name == employeeDetailsLoader.getName(field)
+
+        where:
+        field << ['ABC', null, '', ' ABC ']
+        name << ['ABC', null, null, 'ABC']
+    }
+
     def "test get annual salary"() {
         expect:
         annualSalary == employeeDetailsLoader.getAnnualSalary(field)
@@ -40,8 +49,8 @@ class EmployeeDetailsLoaderSpec extends Specification {
         payPeriodType == employeeDetailsLoader.getPayPeriodType(field)
 
         where:
-        field << ['MONTH', 'month', 'text']
-        payPeriodType << [PayPeriodType.MONTH, null, null]
+        field << ['MONTHLY', 'month', 'text']
+        payPeriodType << [PayPeriodType.MONTHLY, null, null]
     }
 
     def "test get start date"() {

@@ -61,7 +61,7 @@ class PayslipBuilderSpec extends Specification {
 
     def "test gross income"() {
         setup:
-        employeeDetails.getPayPeriodType() >> PayPeriodType.MONTH
+        employeeDetails.getPayPeriodType() >> PayPeriodType.MONTHLY
         employeeDetails.getAnnualSalary() >> annualSalary
 
         when:
@@ -79,7 +79,7 @@ class PayslipBuilderSpec extends Specification {
         setup:
         dateHelper.findFinancialYear(_) >> 2015
         taxCalculator.calc(_, _) >> tax
-        employeeDetails.getPayPeriodType() >> PayPeriodType.MONTH
+        employeeDetails.getPayPeriodType() >> PayPeriodType.MONTHLY
         employeeDetails.getAnnualSalary() >> 1000
 
         when:
@@ -163,7 +163,7 @@ class PayslipBuilderSpec extends Specification {
         payslip.error == message
 
         where:
-        message = "some error some error "
+        message = "some error some error"
         name = randomUUID() as String
         date = LocalDate.of(2015, 11, 20)
         grossIncome = new Random().nextInt(10000)
